@@ -1,20 +1,20 @@
 ```{r}
 library(tidyverse)
-setwd("./project1/source_data")
-listings = read.csv("./listings.csv")
+listings = read.csv("./source_data/listings.csv")
 ```
 
-```{r}
-names(listings)
-```
-
-```{r}
-summary(listings$review_scores_rating)
-hist(listings$review_scores_rating) # want to output
-```
 ```{r}
 temp = listings %>% select(review_scores_rating) %>% filter(review_scores_rating > 90)
-summary(temp$review_scores_rating)
-hist(temp$review_scores_rating) # want to also output
+p = ggplot(temp,aes(x=review_scores_rating)) + geom_histogram(bins=10)
+ggsave("assets/histogram.png", plot=p)
+```
+
+```{r}
+# summary(listings$review_scores_rating)
+# ggplot(listings,aes(x=review_scores_rating)) + geom_histogram()
+# x = hist(listings$review_scores_rating) # want to output
+# summary(temp$review_scores_rating)
+# hist(temp$review_scores_rating) # want to also output
+# names(listings)
 ```
 
