@@ -10,15 +10,11 @@ names(listings)
 
 ```{r}
 summary(listings$review_scores_rating)
-hist(listings$review_scores_rating)
+hist(listings$review_scores_rating) # want to output
 ```
 ```{r}
 temp = listings %>% select(review_scores_rating) %>% filter(review_scores_rating > 90)
-hist(temp$review_scores_rating,breaks=30)
 summary(temp$review_scores_rating)
-```
-
-```{r}
-listings$amenities
+hist(temp$review_scores_rating) # want to also output
 ```
 

@@ -11,17 +11,20 @@ This repository contains the data, code, and results of an analysis of Airbnbs i
 
 ### Dataset
 
-This analysis is based on the listings dataset which was sourced from InsideAirBnB.com and was last updated on June 25, 2020. This dataset contains information on 2,407 different AirBnB listings in Asheville, North Carolina. Examples of included properties are superhost status, price, bedrooms, zipcode, and rating. In total, there are 106 points of data on each property.
+This analysis is based on the listings dataset which was sourced from InsideAirbnb.com and was last updated on June 25, 2020. This dataset contains information on 2,407 different Airbnb listings in Asheville, North Carolina. Examples of included properties are superhost status, price, bedrooms, zipcode, and rating. In total, there are 106 points of data on each property. The motivation behind this analysis is that I am traveling to Asheville next spring for my honeymoon and I want to make sure that our Airbnb booking is a good price.
 
 ### Preliminary Figures
 * spread of reviews
-* spread of prices (distribution, between room_type, square_feet etc)
+* spread of prices (distribution, by room_type, square_feet etc)
 * difference between superhosts and normal hosts
 
 ### Questions to Answer with Dataset
-1. Is there a relationship between price and rating?
-1. Do superhosts have higher ratings?
-1. Can we predict price based on amentities and properties of the listing?
+1. Can we predict price based on properties of the listing?
+2. Are listings with superhosts better?
    
-* Modeling or data visualizations
-* Criteria for completion
+### Proposal for Modeling/Advanced Data Visualizations
+1. Model for predicting price
+
+### Criteria for completion
+1. Able to determine whether I should search for Airbnbs with superhosts
+1. If the Airbnb I want to book is overpriced or underpriced?
