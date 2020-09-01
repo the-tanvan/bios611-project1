@@ -1,32 +1,27 @@
-Marriage Analytics
+Airbnb Analytics
 =================
 
-This is the readme.md for BIOS 611: Project 1.
+This repository contains the data, code, and results of an analysis of AirBnB data based on Asheville, North Carolina.
 
-## Docker Commands
+## Credits
+* Data sourced from: http://insideairbnb.com/get-the-data.html
+* Inspiration from: https://towardsdatascience.com/digging-into-airbnb-data-reviews-sentiments-superhosts-and-prices-prediction-part1-6c80ccb26c6a
 
-Run the following commands to set up docker image.
+## Project Proposal
 
-docker build . -t project1-env
+### Dataset
 
-docker run --rm -p 8787:8787 -e PASSWORD=hello -v C:/Users/ajtan/Dropbox/2020\ Fall/BIOS\ 611/project1:/home/rstudio/project1 -t project1-env
+This analysis is based on the listings dataset which was sourced from InsideAirBnB.com and was last updated on June 25, 2020. This dataset contains information on 2,407 different AirBnB listings in Asheville, North Carolina. Examples of included properties are superhost status, price, bedrooms, zipcode, and rating. In total, there are 106 points of data on each property.
 
-## Git Commands
+# Preliminary Figures
+* spread of reviews
+* spread of prices (distribution, between room_type, square_feet etc)
+* difference between superhosts and normal hosts
 
-git status
-
-git add [file]
-
-git commit
-
-Insert text by pressing i and typing comment. Escape and save by pressing Esc + :wq
-
-git push
-
-## R Commands
-
-Run the following commands in R to set up data
-
-setwd("./project1/source_data")
-
-test=read.csv("./both_sexes.txt")
+### Questions to Answer with Dataset
+1. Is there a relationship between price and rating?
+1. Do superhosts have higher ratings?
+1. Can we predict price based on amentities and properties of the listing?
+   
+* Modeling or data visualizations
+* Criteria for completion

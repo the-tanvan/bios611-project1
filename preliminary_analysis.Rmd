@@ -1,0 +1,24 @@
+```{r}
+library(tidyverse)
+setwd("./project1/source_data")
+listings = read.csv("./listings.csv")
+```
+
+```{r}
+names(listings)
+```
+
+```{r}
+summary(listings$review_scores_rating)
+hist(listings$review_scores_rating)
+```
+```{r}
+temp = listings %>% select(review_scores_rating) %>% filter(review_scores_rating > 90)
+hist(temp$review_scores_rating,breaks=30)
+summary(temp$review_scores_rating)
+```
+
+```{r}
+listings$amenities
+```
+
