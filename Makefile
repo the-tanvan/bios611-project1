@@ -1,2 +1,2 @@
-assets/histogram.png: source_data/listings.csv histogram.R
-	Rscript histogram.R
+assets/reviews_dist.png: source_data/listings.csv reviews_dist.R
+	Rscript reviews_dist.R
