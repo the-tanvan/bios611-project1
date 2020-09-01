@@ -1,0 +1,27 @@
+1598987979440:library(tidyverse)
+1598987981844:listings = read.csv("source_data/listings.csv")
+1598987982982:temp = listings %>% select(review_scores_rating) %>% filter(review_scores_rating > 90)
+1598987983053:p = ggplot(temp,aes(x=review_scores_rating)) + geom_histogram(bins=10)
+1598987983145:ggsave("assets/histogram.png", plot=p)
+1598988362644:source('~/histogram.R')
+1598988916777:source('~/histogram.R', echo=TRUE)
+1598989044996:source('~/histogram.R', echo=TRUE)
+1598989090765:source('~/histogram.R', echo=TRUE)
+1598989236472:source('~/histogram.R', echo=TRUE)
+1598989282114:source('~/histogram.R', echo=TRUE)
+1598989312966:source('~/histogram.R', echo=TRUE)
+1598989322445:source('~/histogram.R', echo=TRUE)
+1598989338596:p = ggplot(temp,aes(x=review_scores_rating)) +
+1598989338628:geom_histogram(bins=10,fill="#FF585D") +
+1598989338650:labs(x="Review Score (out of 100)",y="Count",title="Histogram of Review Scores for Airbnb Listings") +
+1598989338671:theme(
+1598989338693:panel.grid.major = element_blank(),
+1598989338714:panel.grid.minor = element_blank(),
+1598989338737:panel.background = element_rect(fill = "transparent",colour = NA),
+1598989338760:plot.background = element_rect(fill = "transparent",colour = NA)
+1598989338782:)
+1598989338818:p
+1598989400712:source('~/histogram.R', echo=TRUE)
+1598989403385:source('~/histogram.R', echo=TRUE)
+1598989409623:p
+1598989422783:make assets/histogram.png
