@@ -15,7 +15,7 @@ This analysis is based on the listings dataset which was sourced from InsideAirb
 
 ### Preliminary Figures
 
-![](assets/histogram.png)
+![](assets/reviews_dist.png)
 
 * spread of reviews
 * spread of prices (distribution, by room_type, square_feet etc)
