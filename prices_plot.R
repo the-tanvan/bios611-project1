@@ -34,7 +34,6 @@ byroom = ggplot(listings,aes(x=price,y=room_type)) +
   theme(
     axis.line=element_line(color="black",size=.3),
     axis.ticks.y=element_blank(),
-    axis.text.y=element_blank(),
     panel.grid.major = element_blank(), 
     panel.grid.minor = element_blank(),
     panel.background = element_rect(fill = "transparent",colour = NA),
@@ -56,6 +55,6 @@ bybeds = ggplot(listings,aes(x=price,y=beds)) +
     plot.title = element_text(hjust=0.5)
   )
 
-p = plot_grid(hist,box,byroom,bybeds,align="v",nrow=4)
+p = plot_grid(hist,box,byroom,bybeds,align="v",axis="l",nrow=4)
 
 ggsave("assets/prices_plot.png", plot=p,height=8)
