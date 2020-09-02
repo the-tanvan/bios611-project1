@@ -44,7 +44,7 @@ byroom = ggplot(listings,aes(x=price,y=room_type)) +
 
 bybeds = ggplot(listings,aes(x=price,y=beds)) + 
   geom_point(color="#FF585D") + 
-  labs(x="",y="Price (USD)",title="Plot of Beds against Price") +
+  labs(x="Price (USD)",y="",title="Plot of Beds against Price") +
   theme(
     axis.line=element_line(color="black",size=.3),
     axis.ticks.y=element_blank(),
