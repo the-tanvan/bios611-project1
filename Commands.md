@@ -22,10 +22,6 @@ Insert text by pressing i and typing comment. Escape and save by pressing Esc + 
 
 git push
 
-## R Commands
+## Makefile Commands
 
-Run the following commands in R to set up data
-
-setwd("./project1/source_data")
-
-test=read.csv("./both_sexes.txt")
+make assets/histogram.png
