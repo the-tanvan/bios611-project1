@@ -1,7 +1,7 @@
 library(tidyverse)
 library(cowplot)
 
-listings = read.csv("source_data/listings.csv")
+listings = read.csv("derived_data/listings.csv")
 temp = listings %>% select(review_scores_rating) %>% filter(review_scores_rating > 90)
 
 hist = ggplot(listings,aes(x=review_scores_rating)) + 
@@ -18,7 +18,7 @@ hist = ggplot(listings,aes(x=review_scores_rating)) +
   xlim(38,104)
 
 box = ggplot(listings,aes(x=review_scores_rating)) + 
-  geom_boxplot(fill="transparent",color="#518972") +
+  geom_boxplot(fill="#FFD6D8",color="#FF585D") +
   labs(x="",y="",title="Boxplot of Review Scores for Airbnb Listings") +
   theme(
     axis.line=element_line(color="black",size=.3),
@@ -34,4 +34,4 @@ box = ggplot(listings,aes(x=review_scores_rating)) +
 
 p = plot_grid(box,hist,align="v",nrow=2)
 
-ggsave("assets/reviews_dist.png", plot=p)
+ggsave("assets/reviews_dist.png", plot=p,height=5)
