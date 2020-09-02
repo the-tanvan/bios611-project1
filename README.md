@@ -17,17 +17,13 @@ This analysis is based on the listings dataset which was sourced from InsideAirb
 
 ![](assets/reviews_dist.png)
 
-* spread of reviews
-* spread of prices (distribution, by room_type, square_feet etc)
-* difference between superhosts and normal hosts
+![](assets/prices_plot.png)
 
 ### Questions to Answer with Dataset
-1. Can we predict price based on properties of the listing?
-2. Are listings with superhosts better?
+* Can we predict price based on properties of the listing?
    
 ### Proposal for Modeling/Advanced Data Visualizations
-1. Model for predicting price
+* Model for predicting price
 
 ### Criteria for completion
-1. Able to determine whether I should search for Airbnbs with superhosts
-1. If the Airbnb I want to book is overpriced or underpriced?
+* Able to determine whether if the Airbnb I want to book is overpriced or underpriced?
