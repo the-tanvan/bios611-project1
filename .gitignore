@@ -1,3 +1,4 @@
 .config/
 .local/
 .rstudio/
+.bash_history
