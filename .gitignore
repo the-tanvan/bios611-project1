@@ -3,3 +3,5 @@
 .rstudio/
 .bash_history
 .Rhistory
+.bin/
+.wget-hsts
