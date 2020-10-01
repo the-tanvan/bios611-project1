@@ -10,6 +10,12 @@ docker build . -t project1-env
 
 docker run --rm -p 8787:8787 -e PASSWORD=hello -v C:/Users/ajtan/Dropbox/2020\ Fall/BIOS\ 611/project1:/home/rstudio -t project1-env
 
+Run the following commands to kill a docker container.
+
+docker ps
+
+docker kill <insert container id here>
+
 ## Logging into RStudio
 1. Navigate your internet browser to http://localhost:8787/
 1. Username: rstudio Password: hello
