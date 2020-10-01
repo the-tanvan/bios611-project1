@@ -14,6 +14,7 @@ Run the following commands to set up docker image. For the second command, chang
 ``docker run --rm -p 8787:8787 -e PASSWORD=hello -v <insert path to project1 folder>:/home/rstudio -t project1-env``
 
 Example:
+
 ``docker run --rm -p 8787:8787 -e PASSWORD=hello -v C:/Users/ajtan/Dropbox/2020\ Fall/BIOS\ 611/project1:/home/rstudio -t project1-env``
 
 ## How to construct the final result
