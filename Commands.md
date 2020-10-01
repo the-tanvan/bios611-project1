@@ -24,6 +24,10 @@ git commit
 
 Insert text by pressing i and typing comment. Escape and save by pressing Esc + :wq
 
+Alternative
+
+git commit -m "Write your comment in here"
+
 git push
 
 ## Makefile Commands
