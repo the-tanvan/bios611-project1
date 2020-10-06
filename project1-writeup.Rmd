@@ -1,0 +1,64 @@
+---
+title: "Project 1 Writeup"
+output: html_notebook
+---
+
+```{r include=FALSE}
+library(tidyverse)
+listings = read.csv("derived_data/listings.csv")
+```
+
+# Introduction
+
+Figuring out where you will be staying is an important part of traveling and is often the largest cost in your travel budget. In this analysis, I break down a dataset containing listings of Airbnb properties in Asheville, NC to determine what characteristics predict the price of a listing.
+
+According to Airbnb's help center, the only suggestion they provide for hosts is to use the price of "comparable listings in your city or neighborhood to get an idea of market prices." They do not specify by what factors to determine a comparable listing.
+
+[1] https://www.airbnb.com/help/article/52/how-should-i-choose-my-listings-price
+
+# Dataset Description
+
+This dataset was sourced from InsideAirbnb.com in August of 2020. The last time this dataset had been updated was on June 25, 2020. It contains 2,407 different listings with 106 points of data on each property. Examples of included properties are superhost status, price, bedrooms, zipcode, and rating.
+
+# Exploration
+
+```{r}
+summary(listings$total_price)
+
+ggplot(listings,aes(x=total_price)) + 
+  geom_histogram(bins=40,fill="#FF585D") + 
+  labs(x="Price (USD)",y="Count",title="Histogram of Total Nightly Price for Airbnb Listings (n=2,202") +
+  theme(
+    axis.line=element_line(color="black",size=.3),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(fill = "transparent",colour = NA),
+    plot.background = element_rect(fill = "transparent",colour = NA),
+    plot.title = element_text(hjust=0.5)
+  )
+```
+
+```{r}
+ggplot(listings,aes(x=total_price,y=reorder(property_type_ordered,total_price,FUN=median))) + 
+  geom_boxplot(fill="#FFD6D8",color="#FF585D") +
+  labs(x="",y="",title="Boxplot of Price by Property Type") +
+  theme(
+    axis.line=element_line(color="black",size=.3),
+    axis.ticks.y=element_blank(),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(fill = "transparent",colour = NA),
+    plot.background = element_rect(fill = "transparent",colour = NA),
+    plot.title = element_text(hjust=0.5)
+  )
+```
+
+```{r}
+cheapest = listings %>% filter(total_price < 20)
+head(cheapest)
+```
+
+```{r}
+
+```
+
