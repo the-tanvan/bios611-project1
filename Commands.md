@@ -38,4 +38,6 @@ git push
 
 ## Makefile Commands
 
+Enter the following command into the terminal of RStudio.
+
 make assets/histogram.png
