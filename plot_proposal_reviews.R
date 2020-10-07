@@ -1,3 +1,5 @@
+# Creates histogram and boxplot of distribution of reviews based on listings.csv used in project write-up
+
 library(tidyverse)
 library(cowplot)
 

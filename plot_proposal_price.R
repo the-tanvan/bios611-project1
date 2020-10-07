@@ -1,3 +1,5 @@
+# Creates plot of price against various variables for project proposal
+
 library(tidyverse)
 library(cowplot)
 listings = read.csv("derived_data/listings.csv")
