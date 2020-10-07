@@ -4,6 +4,12 @@ derived_data/listings.csv: source_data/listings.csv ds_listings.R
 derived_data/analysis.csv: derived_data/listings.csv ds_analysis.R
 	Rscript ds_analysis.R
 
+derived_data/train.csv: derived_data/analysis.csv ds_train_test.R
+	Rscript ds_train_test.R
+
+derived_data/test.csv: derived_data/analysis.csv ds_train_test.R
+	Rscript ds_train_test.R
+
 assets/reviews_dist.png: derived_data/listings.csv plot_proposal_price.R
 	Rscript plot_proposal_price.R
 
