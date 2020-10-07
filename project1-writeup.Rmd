@@ -5,6 +5,7 @@ output: html_notebook
 
 ```{r include=FALSE}
 library(tidyverse)
+library(leaps)
 listings = read.csv("derived_data/listings.csv")
 ```
 
@@ -12,22 +13,18 @@ listings = read.csv("derived_data/listings.csv")
 
 Figuring out where you will be staying is an important part of traveling and is often the largest cost in your travel budget. In this analysis, I break down a dataset containing listings of Airbnb properties in Asheville, NC to determine what characteristics predict the price of a listing.
 
-According to Airbnb's help center, the only suggestion they provide for hosts is to use the price of "comparable listings in your city or neighborhood to get an idea of market prices." They do not specify by what factors to determine a comparable listing.
-
-[1] https://www.airbnb.com/help/article/52/how-should-i-choose-my-listings-price
-
 # Dataset Description
 
 This dataset was sourced from InsideAirbnb.com in August of 2020. The last time this dataset had been updated was on June 25, 2020. It contains 2,407 different listings with 106 points of data on each property. Examples of included properties are superhost status, price, bedrooms, zipcode, and rating.
 
+The goal of my analysis is to create a model that will allow me to predict price based on characteristics of an Airbnb. However, this limits me to predictors that can be determined based on the webpage alone. This includes the property type, the room type, the number of bathrooms, bedrooms, beds, reviews, and superhost status.
+
 # Exploration
 
-```{r}
-summary(listings$total_price)
-
-ggplot(listings,aes(x=total_price)) + 
-  geom_histogram(bins=40,fill="#FF585D") + 
-  labs(x="Price (USD)",y="Count",title="Histogram of Total Nightly Price for Airbnb Listings (n=2,202") +
+```{r echo=FALSE}
+ggplot(listings,aes(x=review_scores_rating)) + 
+  geom_histogram(bins=15,fill="#FF585D") + 
+  labs(x="Score",y="Count",title="Histogram of Rating for Airbnb Listings") +
   theme(
     axis.line=element_line(color="black",size=.3),
     panel.grid.major = element_blank(), 
@@ -37,9 +34,10 @@ ggplot(listings,aes(x=total_price)) +
     plot.title = element_text(hjust=0.5)
   )
 ```
+As we can see in the histogram above, the scores are skewed to the left and have a tight distribution, making it difficult to distinguish listings based on rating alone.
 
-```{r}
-ggplot(listings,aes(x=total_price,y=reorder(property_type_ordered,total_price,FUN=median))) + 
+```{r echo=FALSE}
+ggplot(listings,aes(x=total_price,y=reorder(property_type,total_price,FUN=median))) + 
   geom_boxplot(fill="#FFD6D8",color="#FF585D") +
   labs(x="",y="",title="Boxplot of Price by Property Type") +
   theme(
@@ -52,10 +50,17 @@ ggplot(listings,aes(x=total_price,y=reorder(property_type_ordered,total_price,FU
     plot.title = element_text(hjust=0.5)
   )
 ```
+Due to the great variation in price by property type, I decided to limit my analysis to properties that we would potentially book that are similar in distribution: condominium, townhouse, and house.
 
 ```{r}
-cheapest = listings %>% filter(total_price < 20)
-head(cheapest)
+analysis = listings %>% filter(property_type == c("Condominium","Townhouse","House","Apartment")) %>% select(total_price, property_type, room_type, bathrooms, bedrooms, beds, host_is_superhost)
+
+regfit.full=regsubsets(total_price~.,analysis)
+reg.summary=summary(regfit.full)
+which.max(reg.summary$adjr2)
+
+coef(regfit.full,6)
+reg.summary$adjr2[6]
 ```
 
 ```{r}
