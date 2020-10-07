@@ -6,24 +6,32 @@ output: html_notebook
 ```{r include=FALSE}
 library(tidyverse)
 library(leaps)
+
 listings = read.csv("derived_data/listings.csv")
+analysis = read.csv("derived_data/analysis.csv")
+train = read.csv("derived_data/train.csv")
+test = read.csv("derived_data/test.csv")
 ```
 
 # Introduction
 
-Figuring out where you will be staying is an important part of traveling and is often the largest cost in your travel budget. In this analysis, I break down a dataset containing listings of Airbnb properties in Asheville, NC to determine what characteristics predict the price of a listing.
+Figuring out where you will be staying is an important part of traveling and is often the largest cost in your travel budget. In this analysis, I break down a dataset containing listings of Airbnb properties in Asheville, NC to determine what characteristics predict the price of a listing. My goal is to create a predictive model to determine if I'm being overcharged for the listing I chose to use for my honeymoon.
 
 # Dataset Description
 
 This dataset was sourced from InsideAirbnb.com in August of 2020. The last time this dataset had been updated was on June 25, 2020. It contains 2,407 different listings with 106 points of data on each property. Examples of included properties are superhost status, price, bedrooms, zipcode, and rating.
 
-The goal of my analysis is to create a model that will allow me to predict price based on characteristics of an Airbnb. However, this limits me to predictors that can be determined based on the webpage alone. This includes the property type, the room type, the number of bathrooms, bedrooms, beds, reviews, and superhost status.
+# Analysis
+
+I first explore my outcome variable, price. Price is represented in multiple ways in the dataset including ???, but I determined to look at the price for a one-night stay, including the cleaning fee. Thus, the usage of "price" in this analysis represents the sum of rent for one night and the cleaning fee.
+
+Since the goal of my analysis is to create a model that can be used to predict prices as I browse Airbnb, I am limited to predictors that can be determined based on the listing page alone. I determined that the easiest predictors that are both available in the dataset and available from the listing page is the property type, the room type, the number of bathrooms, the number of bedrooms, the number of beds, the average score of reviews, and if the host has superhost status.
 
 # Exploration
 
 ```{r echo=FALSE}
 ggplot(listings,aes(x=review_scores_rating)) + 
-  geom_histogram(bins=15,fill="#FF585D") + 
+  geom_histogram(bins=20,fill="#FF585D") + 
   labs(x="Score",y="Count",title="Histogram of Rating for Airbnb Listings") +
   theme(
     axis.line=element_line(color="black",size=.3),
@@ -33,8 +41,10 @@ ggplot(listings,aes(x=review_scores_rating)) +
     plot.background = element_rect(fill = "transparent",colour = NA),
     plot.title = element_text(hjust=0.5)
   )
+
+sd(analysis$review_scores_rating)
 ```
-As we can see in the histogram above, the scores are skewed to the left and have a tight distribution, making it difficult to distinguish listings based on rating alone.
+As we can see in the histogram above, the scores are skewed to the left and have a tight distribution with a standard deviation of 3.68, making it difficult to distinguish listings based on rating alone. Thus, I decided to eliminate rating as a potential predictor.
 
 ```{r echo=FALSE}
 ggplot(listings,aes(x=total_price,y=reorder(property_type,total_price,FUN=median))) + 
@@ -50,20 +60,67 @@ ggplot(listings,aes(x=total_price,y=reorder(property_type,total_price,FUN=median
     plot.title = element_text(hjust=0.5)
   )
 ```
-Due to the great variation in price by property type, I decided to limit my analysis to properties that we would potentially book that are similar in distribution: condominium, townhouse, and house.
+Due to the great variation in price by property type, I decided to narrow my analysis to a smaller scope and only examined types of properties that we would potentially book: condominiums, townhomes, houses, and apartments.
+
+# Analysis Dataset
 
 ```{r}
-analysis = listings %>% filter(property_type == c("Condominium","Townhouse","House","Apartment")) %>% select(total_price, property_type, room_type, bathrooms, bedrooms, beds, host_is_superhost)
+nrow(analysis)
+```
+After limiting the dataset to relevant property types and to the predictors we are interested in, the data now has 1,419 complete cases for us to predict and test on.
 
-regfit.full=regsubsets(total_price~.,analysis)
-reg.summary=summary(regfit.full)
-which.max(reg.summary$adjr2)
+We split the data about 50/50 to create testing and training datasets using a seed of 1107.
 
-coef(regfit.full,6)
-reg.summary$adjr2[6]
+# Best subset selection
+
+```{r}
+# regfit.full=regsubsets(total_price~.,train)
+# reg.summary=summary(regfit.full)
+# num=which.max(reg.summary$adjr2)
+# 
+# coef(regfit.full,num)
+# reg.summary$adjr2[num]
+
+regfit.best=regsubsets(total_price~.,train,nvmax=9)
+test.mat=model.matrix(total_price~.,test)
+val.errors=rep(NA,5)
+for(i in 1:5) {
+  coefi=coef(regfit.best,id=i)
+  pred=test.mat[,names(coefi)]%*%coefi
+  val.errors[i]=mean((test$total_price-pred)^2)
+}
+num=which.min(val.errors)
+coef(regfit.best,num)
+val.errors[num]
 ```
 
+# Forward selection
 ```{r}
+regfit.best=regsubsets(total_price~.,analysis,nvmax=9,method="forward")
+test.mat=model.matrix(total_price~.,test)
+val.errors=rep(NA,7)
+for(i in 1:7) {
+  coefi=coef(regfit.best,id=i)
+  pred=test.mat[,names(coefi)]%*%coefi
+  val.errors[i]=mean((test$total_price-pred)^2)
+}
+num=which.min(val.errors)
+coef(regfit.best,num)
+val.errors[num]
+```
 
+# Backward selection
+```{r}
+regfit.best=regsubsets(total_price~.,analysis,nvmax=9,method="backward")
+test.mat=model.matrix(total_price~.,test)
+val.errors=rep(NA,7)
+for(i in 1:7) {
+  coefi=coef(regfit.best,id=i)
+  pred=test.mat[,names(coefi)]%*%coefi
+  val.errors[i]=mean((test$total_price-pred)^2)
+}
+num=which.min(val.errors)
+coef(regfit.best,num)
+val.errors[num]
 ```
 
