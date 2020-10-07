@@ -41,10 +41,8 @@ ggplot(listings,aes(x=review_scores_rating)) +
     plot.background = element_rect(fill = "transparent",colour = NA),
     plot.title = element_text(hjust=0.5)
   )
-
-sd(analysis$review_scores_rating)
 ```
-As we can see in the histogram above, the scores are skewed to the left and have a tight distribution with a standard deviation of 3.68, making it difficult to distinguish listings based on rating alone. Thus, I decided to eliminate rating as a potential predictor.
+As we can see in the histogram above, the scores are skewed to the left and have a tight distribution, making it difficult to distinguish listings based on rating alone. Thus, I decided to eliminate rating as a potential predictor.
 
 ```{r echo=FALSE}
 ggplot(listings,aes(x=total_price,y=reorder(property_type,total_price,FUN=median))) + 
@@ -64,7 +62,7 @@ Due to the great variation in price by property type, I decided to narrow my ana
 
 # Analysis Dataset
 
-```{r}
+```{r include=FALSE}
 nrow(analysis)
 ```
 After limiting the dataset to relevant property types and to the predictors we are interested in, the data now has 1,419 complete cases for us to predict and test on.
@@ -74,13 +72,6 @@ We split the data about 50/50 to create testing and training datasets using a se
 # Best subset selection
 
 ```{r}
-# regfit.full=regsubsets(total_price~.,train)
-# reg.summary=summary(regfit.full)
-# num=which.max(reg.summary$adjr2)
-# 
-# coef(regfit.full,num)
-# reg.summary$adjr2[num]
-
 regfit.best=regsubsets(total_price~.,train,nvmax=9)
 test.mat=model.matrix(total_price~.,test)
 val.errors=rep(NA,5)
@@ -124,3 +115,15 @@ coef(regfit.best,num)
 val.errors[num]
 ```
 
+It appears the model selected by forward and backward selection are the exact same. Since the error rate is lower for this model compared to the model selected by best subset selection, we shall use this as our predictive model.
+
+# Prediction
+
+```{r}
+coefi=coef(regfit.best,id=num)
+sample=c(1,0,1,1,1,1,1,1)
+coefi%*%sample
+```
+The predicted price of the linked listing is $66.22 which is much lower than the price which is \$175.
+
+Listing used for prediction: https://www.airbnb.com/rooms/34151081
