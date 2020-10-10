@@ -22,11 +22,18 @@ Build a glm in R to classifier individuals as either Male or Female based on the
 What is the accuracy of the model?
 
 ```{r}
-fit = glm(Male~Weight+Height,data=analysis,family=binomial())
-prediction=(predict(fit,type="response",analysis)>0.5)
-results=as.data.frame(cbind(Truth=analysis$Male,Prediction=prediction)) %>% mutate(correct=(Truth==Prediction))
+set.seed(1107)
+train=sample(c(TRUE,FALSE),nrow(analysis),rep=TRUE)
+test=(!train)
+
+train = analysis[train,]
+test = analysis[test,]
+
+fit = glm(Male~Weight+Height,data=train,family=binomial())
+prediction=(predict(fit,type="response",test)>0.5)
+results=as.data.frame(cbind(Truth=test$Male,Prediction=prediction)) %>% mutate(correct=(Truth==Prediction))
 table(results$correct)
-260/(240+260)
+131/(128+131)
 ```
 # Problem 2
 
@@ -48,14 +55,18 @@ male = analysis %>% filter(Male==1)
 female = analysis %>% filter(Male==0)
 filter = rbind(male[1:50,],female)
 
-fit2 = glm(Male~Weight+Height,data=filter,family=binomial())
-prediction2=(predict(fit2,type="response",filter)>0.5)
-results2=as.data.frame(cbind(Truth=filter$Male,Prediction=prediction2)) %>% mutate(correct=(Truth==Prediction))
+set.seed(132)
+train=sample(c(TRUE,FALSE),nrow(filter),rep=TRUE)
+test=(!train)
+
+train = analysis[train,]
+test = analysis[test,]
+
+fit2 = glm(Male~Weight+Height,data=train,family=binomial())
+prediction2=(predict(fit2,type="response",test)>0.5)
+results2=as.data.frame(cbind(Truth=test$Male,Prediction=prediction2)) %>% mutate(correct=(Truth==Prediction))
 table(results2$correct)
-head(results)
-head(results2)
-head(prediction2)
-255/(50+255)
+117/(130+117)
 ```
 
 
