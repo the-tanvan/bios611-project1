@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(gbm)
+library(pROC)
 ```
 
 ```{r include=FALSE}
@@ -59,12 +60,12 @@ set.seed(132)
 train=sample(c(TRUE,FALSE),nrow(filter),rep=TRUE)
 test=(!train)
 
-train = analysis[train,]
-test = analysis[test,]
+f_train = analysis[train,]
+f_test = analysis[test,]
 
-fit2 = glm(Male~Weight+Height,data=train,family=binomial())
-prediction2=(predict(fit2,type="response",test)>0.5)
-results2=as.data.frame(cbind(Truth=test$Male,Prediction=prediction2)) %>% mutate(correct=(Truth==Prediction))
+fit2 = glm(Male~Weight+Height,data=f_train,family=binomial())
+prediction2=(predict(fit2,type="response",f_test)>0.5)
+results2=as.data.frame(cbind(Truth=f_test$Male,Prediction=prediction2)) %>% mutate(correct=(Truth==Prediction))
 table(results2$correct)
 117/(130+117)
 ```
@@ -73,6 +74,11 @@ table(results2$correct)
 # Problem 4
 
 For the model in the previous example plot an ROC curve. What does this ROC curve mean?
+```{r}
+prediction_roc=predict(fit2,type="response",f_test)
+test_roc = roc(f_test$Male~prediction_roc, plot = TRUE, print.auc = TRUE)
+```
+
 
 # Problem 5
 
