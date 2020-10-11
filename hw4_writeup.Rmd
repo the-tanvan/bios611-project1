@@ -10,11 +10,18 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(gbm)
 library(pROC)
+library(MLmetrics)
 ```
 
 ```{r include=FALSE}
 hw4 = read.csv("source_data/hw4.csv")
 analysis = hw4 %>% mutate(Male=(Gender=="Male"))
+
+set.seed(1107)
+train=sample(c(TRUE,FALSE),nrow(analysis),rep=TRUE)
+test=(!train)
+train = analysis[train,]
+test = analysis[test,]
 ```
 # Problem 1
 
@@ -23,19 +30,14 @@ Build a glm in R to classifier individuals as either Male or Female based on the
 What is the accuracy of the model?
 
 ```{r}
-set.seed(1107)
-train=sample(c(TRUE,FALSE),nrow(analysis),rep=TRUE)
-test=(!train)
-
-train = analysis[train,]
-test = analysis[test,]
-
 fit = glm(Male~Weight+Height,data=train,family=binomial())
 prediction=(predict(fit,type="response",test)>0.5)
 results=as.data.frame(cbind(Truth=test$Male,Prediction=prediction)) %>% mutate(correct=(Truth==Prediction))
 table(results$correct)
 131/(128+131)
 ```
+The model is 50.57% accurate.
+
 # Problem 2
 
 Use the 'gbm' package to train a similar model. Don't worry about hyper parameter tuning for now.
@@ -53,7 +55,7 @@ gbm_results=as.data.frame(cbind(Truth=test$Male,Prediction=gbm_predict)) %>% mut
 table(gbm_results$correct)
 123/(124+123)
 ```
-
+The model is 49.80% accurate.
 
 # Problem 3
 
@@ -73,28 +75,29 @@ f_test = analysis[test,]
 
 fit2 = glm(Male~Weight+Height,data=f_train,family=binomial())
 prediction2=(predict(fit2,type="response",f_test)>0.5)
-results2=as.data.frame(cbind(Truth=f_test$Male,Prediction=prediction2)) %>% mutate(correct=(Truth==Prediction))
-table(results2$correct)
-117/(130+117)
-```
 
+F1_Score(f_test$Male,prediction2, positive = NULL)
+```
+The F1 score is 0.458.
 
 # Problem 4
 
 For the model in the previous example plot an ROC curve. What does this ROC curve mean?
+
 ```{r}
 prediction_roc=predict(fit2,type="response",f_test)
 test_roc = roc(f_test$Male~prediction_roc, plot = TRUE, print.auc = TRUE)
 ```
+The graph shows a fairly linear ROC curve and with a AUC close to 0.5, the model is shown to have no class separation capacity.
 
 # Problem 5
 
 Using K-Means, cluster the same data set. Can you identify the clusters with the known labels? Provide an interpretation of this result.
 
 ```{r}
-kcluster_df = scale(analysis %>% select(-Gender))
+temp=analysis %>% select(-c(Male,Gender))
+kcluster_df = scale(temp)
 km.res = kmeans(kcluster_df, 2)
 print(km.res)
 ```
-
-
+With k-means clustering, it is pretty difficult to tell which cluster represents which gender. Typically, I would assume that the cluster with the higher height and weight is males, but the higher means of height and weight are on differen clusters. This shows that it is hard to classify males and females with clustering.
