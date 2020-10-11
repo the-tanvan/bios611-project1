@@ -43,7 +43,15 @@ Use the 'gbm' package to train a similar model. Don't worry about hyper paramete
 What is the accuracy of the model?
 
 ```{r}
-
+head(train)
+gbm_model <- gbm(formula = Male ~ Weight+Height, 
+                    distribution = "bernoulli", 
+                    data = train,
+                    n.trees = 1000)
+gbm_predict = (predict(gbm_model, newdata=test, n.trees=1000,type="response")>0.5)
+gbm_results=as.data.frame(cbind(Truth=test$Male,Prediction=gbm_predict)) %>% mutate(correct=(Truth==Prediction))
+table(gbm_results$correct)
+123/(124+123)
 ```
 
 
@@ -79,8 +87,14 @@ prediction_roc=predict(fit2,type="response",f_test)
 test_roc = roc(f_test$Male~prediction_roc, plot = TRUE, print.auc = TRUE)
 ```
 
-
 # Problem 5
 
 Using K-Means, cluster the same data set. Can you identify the clusters with the known labels? Provide an interpretation of this result.
+
+```{r}
+kcluster_df = scale(analysis %>% select(-Gender))
+km.res = kmeans(kcluster_df, 2)
+print(km.res)
+```
+
 
