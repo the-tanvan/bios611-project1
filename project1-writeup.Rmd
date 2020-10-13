@@ -12,14 +12,9 @@ analysis = read.csv("derived_data/analysis.csv")
 train = read.csv("derived_data/train.csv")
 test = read.csv("derived_data/test.csv")
 
-# * Update Dockerfile to have docker/verse
-# * Add more to README
-# * Remind people to use a unique password for docker container
-# * Add how to export pdf to Makefile
-# * Add library tidyverse for ds_train_test
-# * Investigate second mode of house distribution
-# * Hide code
-# * Add a few more figures
+# Add how to export pdf to Makefile
+# Clean up analysis code (hide unnecessary code)
+# Add two more figures (investigating outliers in house distribution)
 
 ```
 
