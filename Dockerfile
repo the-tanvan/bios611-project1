@@ -1,4 +1,4 @@
-FROM rocker/tidyverse
+FROM rocker/verse
 MAINTAINER Jenna Tan <alyjen.tan@gmail.com>
 RUN R -e "install.packages('cowplot')"
 RUN R -e "install.packages('e1071')"
