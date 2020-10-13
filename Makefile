@@ -1,3 +1,6 @@
+project1-writeup.pdf: derived_data/listings.csv derived_data/analysis.csv derived_data/train.csv derived_data/test.csv project1-writeup.Rmd 
+	R -e "rmarkdown::render{'project1-writeup.Rmd',output_format='pdf_document'}"
+
 derived_data/listings.csv: source_data/listings.csv ds_listings.R
 	Rscript ds_listings.R
 
