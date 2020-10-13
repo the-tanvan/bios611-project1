@@ -14,7 +14,7 @@ test = read.csv("derived_data/test.csv")
 
 # * Update Dockerfile to have docker/verse
 # * Add more to README
-# * Remind people to use a unique passwor for docker container
+# * Remind people to use a unique password for docker container
 # * Add how to export pdf to Makefile
 # * Add library tidyverse for ds_train_test
 # * Investigate second mode of house distribution
