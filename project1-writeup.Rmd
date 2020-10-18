@@ -1,5 +1,6 @@
 ---
 title: "Project 1 Writeup"
+author: "Jenna Tan"
 output: html_notebook
 ---
 
@@ -9,32 +10,37 @@ library(leaps)
 
 listings = read.csv("derived_data/listings.csv")
 analysis = read.csv("derived_data/analysis.csv")
+houses = read.csv("derived_data/houses.csv")
 train = read.csv("derived_data/train.csv")
 test = read.csv("derived_data/test.csv")
 
-# Add how to export pdf to Makefile
 # Clean up analysis code (hide unnecessary code)
-# Add two more figures (investigating outliers in house distribution)
-
+# Add labels for new figures
+# Future exploration?
 ```
 
 # Introduction
 
-Figuring out where you will be staying is an important part of traveling and is often the largest cost in your travel budget. In this analysis, I break down a dataset containing listings of Airbnb properties in Asheville, NC to determine what characteristics predict the price of a listing. My goal is to create a predictive model to determine if I'm being overcharged for the listing I chose to use for my honeymoon.
+Booking travel accomodations is one of the most important part of planning a vacation and oftentimes, it is the most expensive part of your travel budget.
+
+In this analysis, I break down a dataset containing listings of Airbnb properties in Asheville, NC to determine what characteristics predict the price of a listing. I will then create a predictive model to determine if I'm being overcharged for the listing I chose to use for my honeymoon.
 
 # Dataset Description
 
-This dataset was sourced from InsideAirbnb.com in August of 2020. The last time this dataset had been updated was on June 25, 2020. It contains 2,407 different listings with 106 points of data on each property. Examples of included properties are superhost status, price, bedrooms, zipcode, and rating.
-
-# Analysis
-
-I first explore my outcome variable, price. Price is represented in multiple ways in the dataset including ???, but I determined to look at the price for a one-night stay, including the cleaning fee. Thus, the usage of "price" in this analysis represents the sum of rent for one night and the cleaning fee.
-
-Since the goal of my analysis is to create a model that can be used to predict prices as I browse Airbnb, I am limited to predictors that can be determined based on the listing page alone. I determined that the easiest predictors that are both available in the dataset and available from the listing page is the property type, the room type, the number of bathrooms, the number of bedrooms, the number of beds, the average score of reviews, and if the host has superhost status.
+This dataset was sourced from InsideAirbnb.com and was last updated on June 25, 2020. It contains 2,407 different listings with 106 points of data on each property. Examples of included properties are superhost status, price, bedrooms, zipcode, and rating.
 
 # Exploration
 
-```{r echo=FALSE}
+I first explore my outcome variable, price. Price is represented in multiple ways in the dataset including nightly price, weekly price and monthly price. I decided to look at the price for a one-night stay, including the cleaning fee. Thus, the usage of "price" in this analysis represents the sum of rent for one night and the cleaning fee. I chose to exclude taxes and other fees since it would vary from property to property.
+
+Since the goal of my analysis is to create a model that can be used to predict prices as I browse Airbnb, I am limited to predictors that can be determined based on the listing page alone. Predictors that are available in the dataset and the listing page is the property type, the room type, the number of bathrooms, the number of bedrooms, the number of beds, the average score of reviews, and the superhost status of the host.
+
+```{r include=F}
+mean(listings$review_scores_rating,na.rm=TRUE)
+sd(listings$review_scores_rating,na.rm=TRUE)
+```
+
+```{r echo=F, message=F}
 ggplot(listings,aes(x=review_scores_rating)) + 
   geom_histogram(bins=20,fill="#FF585D") + 
   labs(x="Score",y="Count",title="Histogram of Rating for Airbnb Listings") +
@@ -47,7 +53,9 @@ ggplot(listings,aes(x=review_scores_rating)) +
     plot.title = element_text(hjust=0.5)
   )
 ```
-As we can see in the histogram above, the scores are skewed to the left and have a tight distribution, making it difficult to distinguish listings based on rating alone. Thus, I decided to eliminate rating as a potential predictor.
+**Figure 1**: The ratings for properties are skewed to the left and have a very narrow distribution. 
+
+With a mean of 97.72 and standard deviation of 3.40, the distribution is very narrow and skewed to the left. This makes it difficult to distinguish listings based on rating alone. Thus, I decided to eliminate rating as a potential predictor.
 
 ```{r echo=FALSE}
 ggplot(listings,aes(x=total_price,y=reorder(property_type,total_price,FUN=median))) + 
@@ -63,7 +71,54 @@ ggplot(listings,aes(x=total_price,y=reorder(property_type,total_price,FUN=median
     plot.title = element_text(hjust=0.5)
   )
 ```
-Due to the great variation in price by property type, I decided to narrow my analysis to a smaller scope and only examined types of properties that we would potentially book: condominiums, townhomes, houses, and apartments.
+**Figure 2**: The figure shows the spread of price by property type. Note that houses have a large number of outliers.
+
+Due to the great variation in price by property type demonstrated in the boxplots, I decided to narrow my analysis to a smaller scope and only examined types of properties that we would potentially book: condominiums, townhomes, houses, and apartments.
+
+# Investigation of Outliers in House
+
+```{r echo=F, message=F}
+ggplot(houses,aes(x=total_price,y=beds,color=outlier)) + 
+  geom_point() +
+  labs(x="Price (USD)",y="Number of Beds",title="Scatterplot of Beds Against Price for Houses") +
+  theme(
+    axis.line=element_line(color="black",size=.3),
+    axis.ticks.y=element_blank(),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(fill = "transparent",colour = NA),
+    plot.background = element_rect(fill = "transparent",colour = NA),
+    plot.title = element_text(hjust=0.5),
+    legend.title=element_blank()
+  ) +
+  scale_color_manual(labels=c("Not an outlier","Outlier"),
+                       values=c("#FF585D","#429F9E"))
+```
+
+```{r echo=F}
+ggplot(houses,aes(x=total_price,y=bathrooms,color=outlier)) + 
+  geom_point() +
+  labs(x="Price (USD)",y="Number of Bathrooms",title="Scatterplot of Bathrooms Against Price for Houses") +
+  theme(
+    axis.line=element_line(color="black",size=.3),
+    axis.ticks.y=element_blank(),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(fill = "transparent",colour = NA),
+    plot.background = element_rect(fill = "transparent",colour = NA),
+    plot.title = element_text(hjust=0.5),
+    legend.title=element_blank()
+  ) +
+  scale_color_manual(labels=c("Not an outlier","Outlier"),
+                       values=c("#FF585D","#429F9E"))
+```
+
+```{r include=F}
+max = outliers %>% filter(total_price==1360)
+names(max)
+max$listing_url
+```
+
 
 # Analysis Dataset
 

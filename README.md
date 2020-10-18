@@ -24,6 +24,7 @@ To create the project1-writeup pdf, run the following commands in your R termina
 
 make derived_data/listings.csv
 make derived_data/analysis.csv
+make derived_data/houses.csv
 make derived_data/train.csv
 make derived_data/test.csv
 R -e "rmarkdown::render('project1-writeup.Rmd',output_format='pdf_document')"
