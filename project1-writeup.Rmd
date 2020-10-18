@@ -40,7 +40,7 @@ mean(listings$review_scores_rating,na.rm=TRUE)
 sd(listings$review_scores_rating,na.rm=TRUE)
 ```
 
-```{r echo=F, message=F}
+```{r echo=F, warning=F}
 ggplot(listings,aes(x=review_scores_rating)) + 
   geom_histogram(bins=20,fill="#FF585D") + 
   labs(x="Score",y="Count",title="Histogram of Rating for Airbnb Listings") +
@@ -71,13 +71,14 @@ ggplot(listings,aes(x=total_price,y=reorder(property_type,total_price,FUN=median
     plot.title = element_text(hjust=0.5)
   )
 ```
+
 **Figure 2**: The figure shows the spread of price by property type. Note that houses have a large number of outliers.
 
 Due to the great variation in price by property type demonstrated in the boxplots, I decided to narrow my analysis to a smaller scope and only examined types of properties that we would potentially book: condominiums, townhomes, houses, and apartments.
 
 # Investigation of Outliers in House
 
-```{r echo=F, message=F}
+```{r echo=F, warning=F}
 ggplot(houses,aes(x=total_price,y=beds,color=outlier)) + 
   geom_point() +
   labs(x="Price (USD)",y="Number of Beds",title="Scatterplot of Beds Against Price for Houses") +
@@ -94,6 +95,7 @@ ggplot(houses,aes(x=total_price,y=beds,color=outlier)) +
   scale_color_manual(labels=c("Not an outlier","Outlier"),
                        values=c("#FF585D","#429F9E"))
 ```
+**Figure 3:** Out of the listings of houses, the outliers include listings with a wide spread of beds, suggesting there isn't a strong relationship between beds and price.
 
 ```{r echo=F}
 ggplot(houses,aes(x=total_price,y=bathrooms,color=outlier)) + 
@@ -113,6 +115,8 @@ ggplot(houses,aes(x=total_price,y=bathrooms,color=outlier)) +
                        values=c("#FF585D","#429F9E"))
 ```
 
+**Figure 4:** Out of the listings of houses, the outliers include only listings with 2 or more bathrooms, suggesting the number of bathrooms may be associated with price.
+
 # Analysis Dataset
 
 ```{r include=FALSE}
@@ -120,9 +124,9 @@ nrow(analysis)
 ```
 After limiting the dataset to relevant property types and to the predictors we are interested in, the data now has 1,419 complete cases for us to predict and test on.
 
-We split the data about 50/50 to create testing and training datasets using a seed of 1107.
+We split the data about 50/50 to create testing and training datasets, using a seed of 1107.
 
-# Best subset selection
+# Best Subset Selection
 
 ```{r include=F}
 regfit.best=regsubsets(total_price~.,train,nvmax=9)
@@ -138,7 +142,11 @@ coef(regfit.best,num)
 val.errors[num]
 ```
 
-# Forward selection
+With the method of best subset selection, the predictors selected included whether a listing was a condominium, whether the room was a private room, the number of bathrooms, the number of beds, and whether the host was a superhost. Surprisingly, if the host was a superhost, the total price was lower by \$27.21 on average. This is the opposite of what I would anticipate.
+
+The model we trained has a testing error of 14052.95.
+
+# Forward and Backward Selection
 ```{r include=F}
 regfit.best=regsubsets(total_price~.,analysis,nvmax=9,method="forward")
 test.mat=model.matrix(total_price~.,test)
@@ -151,10 +159,7 @@ for(i in 1:7) {
 num=which.min(val.errors)
 coef(regfit.best,num)
 val.errors[num]
-```
 
-# Backward selection
-```{r include=F}
 regfit.best=regsubsets(total_price~.,analysis,nvmax=9,method="backward")
 test.mat=model.matrix(total_price~.,test)
 val.errors=rep(NA,7)
@@ -168,15 +173,23 @@ coef(regfit.best,num)
 val.errors[num]
 ```
 
-It appears the model selected by forward and backward selection are the exact same. Since the error rate is lower for this model compared to the model selected by best subset selection, we shall use this as our predictive model.
+Forward and backward selection produce the same model, including the following as predictors of price: whether the property was a condominium, whether the property was a house, whether the room was private, the number of bathrooms, the number of bedrooms, the number of beds, and whether the host was a superhost.
+
+The model we trained has a testing error of 13393.39.
+
+Since the error rate is lower for this model compared to the model selected by best subset selection, we shall use this as our predictive model.
 
 # Prediction
 
-```{r}
+```{r include=F}
 coefi=coef(regfit.best,id=num)
 sample=c(1,0,1,1,1,1,1,1)
 coefi%*%sample
 ```
-The predicted price of the linked listing is \$66.22 which is much lower than the price which is \$175.
+Using the model trained by forward/backward selection, I predict the price of the listing linked below. The price was predicited to be \$66.22 which is much lower than the price which is \$175. This suggests that the price of Airbnbs is associated with predictors beyond what I included in my analysis dataset.
 
 Listing used for prediction: https://www.airbnb.com/rooms/34151081
+
+# Further Exploration
+
+To further expand on my analysis, I would incorporate the presence of specific amentities in my model training. It would be interesting to explore if the presence of a full kitchen or a hot tub would increase the price and create a more accurate predictive model for pricing.
