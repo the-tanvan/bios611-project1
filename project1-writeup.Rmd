@@ -113,13 +113,6 @@ ggplot(houses,aes(x=total_price,y=bathrooms,color=outlier)) +
                        values=c("#FF585D","#429F9E"))
 ```
 
-```{r include=F}
-max = outliers %>% filter(total_price==1360)
-names(max)
-max$listing_url
-```
-
-
 # Analysis Dataset
 
 ```{r include=FALSE}
@@ -131,7 +124,7 @@ We split the data about 50/50 to create testing and training datasets using a se
 
 # Best subset selection
 
-```{r}
+```{r include=F}
 regfit.best=regsubsets(total_price~.,train,nvmax=9)
 test.mat=model.matrix(total_price~.,test)
 val.errors=rep(NA,5)
@@ -146,7 +139,7 @@ val.errors[num]
 ```
 
 # Forward selection
-```{r}
+```{r include=F}
 regfit.best=regsubsets(total_price~.,analysis,nvmax=9,method="forward")
 test.mat=model.matrix(total_price~.,test)
 val.errors=rep(NA,7)
@@ -161,7 +154,7 @@ val.errors[num]
 ```
 
 # Backward selection
-```{r}
+```{r include=F}
 regfit.best=regsubsets(total_price~.,analysis,nvmax=9,method="backward")
 test.mat=model.matrix(total_price~.,test)
 val.errors=rep(NA,7)
@@ -184,6 +177,6 @@ coefi=coef(regfit.best,id=num)
 sample=c(1,0,1,1,1,1,1,1)
 coefi%*%sample
 ```
-The predicted price of the linked listing is $66.22 which is much lower than the price which is \$175.
+The predicted price of the linked listing is \$66.22 which is much lower than the price which is \$175.
 
 Listing used for prediction: https://www.airbnb.com/rooms/34151081
