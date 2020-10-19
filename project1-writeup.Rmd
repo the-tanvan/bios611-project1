@@ -7,16 +7,20 @@ output: html_notebook
 ```{r include=FALSE}
 library(tidyverse)
 library(leaps)
+library(e1071)
+library(mlbench)
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(RColorBrewer)
+library(webshot)
+library(htmlwidgets)
 
 listings = read.csv("derived_data/listings.csv")
 analysis = read.csv("derived_data/analysis.csv")
 houses = read.csv("derived_data/houses.csv")
 train = read.csv("derived_data/train.csv")
 test = read.csv("derived_data/test.csv")
-
-# Clean up analysis code (hide unnecessary code)
-# Add labels for new figures
-# Future exploration?
 ```
 
 # Introduction
@@ -27,7 +31,35 @@ In this analysis, I break down a dataset containing listings of Airbnb propertie
 
 # Dataset Description
 
-This dataset was sourced from InsideAirbnb.com and was last updated on June 25, 2020. It contains 2,407 different listings with 106 points of data on each property. Examples of included properties are superhost status, price, bedrooms, zipcode, and rating.
+This dataset was sourced from InsideAirbnb.com and was last updated on June 25, 2020. It contains 2,407 different listings with 106 points of data on each property. Examples of included properties are superhost status, price, bedrooms, zipcode, and rating. Below, I've included a word cloud of the name of Airbnb listings in Asheville to illustrate the common characteristics advertised in listings.
+
+```{r echo=F, warning=F}
+corpus = Corpus(VectorSource(listings$name))
+
+#Conversion to Lowercase
+corpus = tm_map(corpus, PlainTextDocument)
+corpus = tm_map(corpus, tolower)
+
+#Removing Punctuation
+corpus = tm_map(corpus, removePunctuation)
+
+#Remove stopwords (English and "avl")
+corpus = tm_map(corpus, removeWords, c("avl", stopwords("english")))
+
+# Eliminate white spaces
+corpus = tm_map(corpus, stripWhitespace)
+
+DTM = TermDocumentMatrix(corpus)
+mat = as.matrix(DTM)
+f = sort(rowSums(mat),decreasing=TRUE)
+dat = data.frame(word = names(f),freq=f)
+
+set.seed(5)
+wordcloud(words=dat$word, freq=dat$freq, min.freq=20, random.order=T, random.color=T,rot.per=.4,
+          colors=c("#00A699","#484848","#FF5A5F","#FC642D","#767676"))
+```
+
+We can see that popular words include Asheville (obviously), downtown, private, mountain, home and even Biltmore. More obscure words include arts, sunny, haven and haywood.
 
 # Exploration
 
@@ -78,6 +110,8 @@ Due to the great variation in price by property type demonstrated in the boxplot
 
 # Investigation of Outliers in House
 
+I attempt to investigate the reason for the large number of outliers for houses and assess the relationship between price and beds as well as the relationship between price and bathrooms.
+
 ```{r echo=F, warning=F}
 ggplot(houses,aes(x=total_price,y=beds,color=outlier)) + 
   geom_point() +
@@ -116,6 +150,8 @@ ggplot(houses,aes(x=total_price,y=bathrooms,color=outlier)) +
 ```
 
 **Figure 4:** Out of the listings of houses, the outliers include only listings with 2 or more bathrooms, suggesting the number of bathrooms may be associated with price.
+
+Based off of these two scatterplots, it seems that the outliers included listings with 0 to 18 beds and only listings with two or more bathrooms. For this analysis, I've decided to leave in the outliers, but hope that future investigations will take note of these observations.
 
 # Analysis Dataset
 
@@ -186,10 +222,10 @@ coefi=coef(regfit.best,id=num)
 sample=c(1,0,1,1,1,1,1,1)
 coefi%*%sample
 ```
-Using the model trained by forward/backward selection, I predict the price of the listing linked below. The price was predicited to be \$66.22 which is much lower than the price which is \$175. This suggests that the price of Airbnbs is associated with predictors beyond what I included in my analysis dataset.
+Using the model trained by forward/backward selection, I predict the price of the listing linked below. The price was predicted to be \$66.22 which is much lower than the price which is \$175. This suggests that the price of Airbnbs is associated with predictors beyond what I included in my analysis dataset.
 
 Listing used for prediction: https://www.airbnb.com/rooms/34151081
 
 # Further Exploration
 
-To further expand on my analysis, I would incorporate the presence of specific amentities in my model training. It would be interesting to explore if the presence of a full kitchen or a hot tub would increase the price and create a more accurate predictive model for pricing.
+To further expand on my analysis, I would incorporate the presence of specific amenities in my model training. Due to the format of the dataset which included the presence of all amenities within one variable, I was unable to invest time in deriving appropriate variables. Thus, if given more time or a second attempt at this investigation, it would be interesting to explore if the presence of amenities, such as a full kitchen or a hot tub, would lead to more accurate predictive model for pricing.
