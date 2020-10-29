@@ -12,7 +12,7 @@ library(tidyverse)
 
 # Data Preparation
 
-listings = read.csv("derived_data/listings.csv")
+listings = read.csv("/home/rstudio/derived_data/listings.csv")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -21,9 +21,32 @@ ui <- fluidPage(
     titlePanel("Asheville Airbnbs"),
 
     # Sidebar with a slider input for number of bins 
-    selectInput(inputId="channel1",label="Choose Channel",choices = c("Houses"="Houses",
-                                                                       "Townhomes"="Townhomes"),
-                selected = "BC6",multiple = F),
+    selectInput(inputId="channel1",label="Choose Property Type",choices = c("All"="All",
+                                                                      "Apartments"="Apartments",
+                                                                      "Barns"="Barns",
+                                                                      "Bed and breakfasts"="Bed and breakfasts",
+                                                                      "Boutique hotels"="Boutique hotels",
+                                                                      "Bungalows"="Bungalows",
+                                                                      "Buses"="Buses",
+                                                                      "Cabins"="Cabins",
+                                                                      "Camper/RVs"="Camper/RVs",
+                                                                      "Campsites"="Campsites",
+                                                                      "Chalets"="Chalets",
+                                                                      "Condominiums"="Condominiums",
+                                                                      "Cottages"="Cottages",
+                                                                      "Farm stays"="Farm stays",
+                                                                      "Guest suites"="Guest Suites",
+                                                                      "Guesthouses"="Guesthouses",
+                                                                      "Hostels"="Hostels",
+                                                                      "Houses"="Houses",
+                                                                      "Lofts"="Lofts",
+                                                                      "Others"="Others",
+                                                                      "Tents"="Tents",
+                                                                      "Tiny houses"="Tiny houses",
+                                                                      "Townhouses"="Townhouses",
+                                                                      "Treehouses"="Treehouses",
+                                                                      "Yurts"="Yurts"),
+                selected = "All",multiple = F),
 
         # Show a plot of the generated distribution
         mainPanel(
@@ -36,21 +59,32 @@ server <- function(input, output) {
 
     output$distPlot <- renderPlot({
         
-        #Filter data
-        analysis = listings %>% filter(property_type=input$channel1)
+        if(input$channel1=="All"){
+            p = ggplot(listings,aes(x=total_price)) + 
+                labs(x="Price",y="Count",title="Histogram of Price for Airbnb Listings")    
+        }else{
+            if(input$channel1=="Buses"){
+                property="Bus"
+            }else{
+                property=substr(input$channel1, 1, nchar(input$channel1)-1)
+            }
+            mytitle = paste("Histogram of Price for Airbnb Listings for",input$channel1,sep=" ")
+            analysis = listings %>% filter(property_type==property)
+            p = ggplot(analysis,aes(x=total_price)) + 
+                labs(x="Price",y="Count",title=mytitle)    
+        }
         
-        p = ggplot(analysis,aes(x=price)) + 
-            geom_histogram(bins=40,fill="#FF585D") + 
-            labs(x="",y="Count",title="Histogram of Price for Airbnb Listings") +
+        p = p + geom_histogram(bins=10,fill="#FF585D") + 
             theme(
-                axis.line=element_line(color="black",size=.3),
-                panel.grid.major = element_blank(), 
-                panel.grid.minor = element_blank(),
-                panel.background = element_rect(fill = "transparent",colour = NA),
-                plot.background = element_rect(fill = "transparent",colour = NA),
-                plot.title = element_text(hjust=0.5)
-            )
+            axis.line=element_line(color="black",size=.3),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_rect(fill = "transparent",colour = NA),
+            plot.background = element_rect(fill = "transparent",colour = NA),
+            plot.title = element_text(hjust=0.5)
+        )
         
+        p
     })
 }
 
