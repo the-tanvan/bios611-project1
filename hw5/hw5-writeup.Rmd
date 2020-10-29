@@ -2,9 +2,16 @@
 title: "hw5"
 author: "Jenna"
 date: "10/29/2020"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 
+```{r include=FALSE}
+library(readr)
+library(gbm)
+library(tidyverse)
+```
 
 # Table of Contents
 
@@ -15,7 +22,6 @@ output: pdf_document
 5.  [Q5](#orgb73f6b4)
 6.  [Q6](#org870b507)
 7.  [Q7](#orge0cfd1d)
-
 
 <a id="org0f04966"></a>
 
@@ -28,6 +34,26 @@ With the data set given here:
 Repeat your GBM model. Contrast your results with the results for the
 previous exercise.
 
+```{r}
+q1.urlfile="https://raw.githubusercontent.com/Vincent-Toups/bios611-project1/master/source_data/datasets_26073_33239_weight-height.csv"
+q1=read_csv(url(q1.urlfile))
+q1.analysis=q1%>%mutate(Male=(Gender=="Male"))
+
+set.seed(392)
+q1.train=sample(c(TRUE,FALSE),nrow(q1.analysis),rep=TRUE)
+q1.test=(!q1.train)
+q1.train = q1.analysis[q1.train,]
+q1.test = q1.analysis[q1.test,]
+gbm_model <- gbm(formula = Male ~ Weight+Height, 
+                    distribution = "bernoulli", 
+                    data = q1.train,
+                    n.trees = 1000)
+gbm_predict = (predict(gbm_model, newdata=q1.test, n.trees=1000,type="response")>0.5)
+gbm_results=as.data.frame(cbind(Truth=q1.test$Male,Prediction=gbm_predict)) %>% mutate(correct=(Truth==Prediction))
+table(gbm_results$correct)
+4585/(4585+408)
+```
+This model with an accuracy of 91.8% is more accurate than my previous model with an accuracy of 49.8%.
 
 <a id="org6a81eeb"></a>
 
@@ -51,6 +77,10 @@ Using the data set available here:
     combination of the original variables.
 6.  Make a plot of the two largest components. Any insights?
 
+```{r}
+q2.urlfile="https://github.com/Vincent-Toups/bios611-project1/blob/master/source_data/datasets_38396_60978_charcters_stats.csv"
+q2=read_csv(url(q2.urlfile))
+```
 
 <a id="org51a4194"></a>
 
