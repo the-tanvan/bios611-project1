@@ -50,18 +50,36 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
+           h2("Summary of Price"),
+           verbatimTextOutput("sum"),
            plotOutput("distPlot")
         )
     )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+    
+    output$sum <- renderPrint({
+        
+        if(input$channel1=="All"){
+            summary(listings$total_price)  
+        }else{
+            if(input$channel1=="Buses"){
+                property="Bus"
+            }else{
+                property=substr(input$channel1, 1, nchar(input$channel1)-1)
+            }
+            analysis=listings %>% filter(property_type==property)
+            summary(analysis$total_price)
+        }
+    })
 
     output$distPlot <- renderPlot({
         
         if(input$channel1=="All"){
             p = ggplot(listings,aes(x=total_price)) + 
-                labs(x="Price",y="Count",title="Histogram of Price for Airbnb Listings")    
+                labs(x="Price",y="Count",title="Histogram of Price for Airbnb Listings") +
+                geom_histogram(bins=30,fill="#FF585D")
         }else{
             if(input$channel1=="Buses"){
                 property="Bus"
@@ -71,11 +89,11 @@ server <- function(input, output) {
             mytitle = paste("Histogram of Price for Airbnb Listings for",input$channel1,sep=" ")
             analysis = listings %>% filter(property_type==property)
             p = ggplot(analysis,aes(x=total_price)) + 
-                labs(x="Price",y="Count",title=mytitle)    
+                labs(x="Price",y="Count",title=mytitle) +
+                geom_histogram(bins=15,fill="#FF585D")
         }
         
-        p = p + geom_histogram(bins=10,fill="#FF585D") + 
-            theme(
+        p = p + theme(
             axis.line=element_line(color="black",size=.3),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
