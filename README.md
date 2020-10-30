@@ -11,13 +11,23 @@ If you wish to replicate this exact analysis, please utilize the csvs located in
 ## How do I build the docker image?
 Run the following commands to set up a docker image. Note for the second command, you should insert your own unique password and change the path in the command to the project1 folder in your directory. Refer to Commands.md for more commands.
 
+Command to build docker image: 
+
 ``docker build . -t project1-env``
 
+Command to run docker image (RStudio):
+
 ``docker run --rm -p 8787:8787 -e PASSWORD=<insert your own unique password> -v <insert path to project1 folder>:/home/rstudio -t project1-env``
+
+Command to run docker image (Python/Jupyter Lab):
+
+``docker run -p 8787:8787 -v <insert your directory>:/home/rstudio -it project1-env sudo -H -u rstudio bash -c "cd ~/; jupyter lab --ip 0.0.0.0 --port 8787"``
 
 Example:
 
 ``docker run --rm -p 8787:8787 -e PASSWORD=hello -v C:/Users/ajtan/Dropbox/2020\ Fall/BIOS\ 611/project1:/home/rstudio -t project1-env``
+
+``docker run -p 8787:8787 -v C:/Users/ajtan/Dropbox/2020\ Fall/BIOS\ 611/project1:/home/rstudio -it project1-env sudo -H -u rstudio bash -c "cd ~/; jupyter lab --ip 0.0.0.0 --port 8787"``
 
 ## How do I construct the final result?
 To create the project1-writeup pdf, run the following commands in your R terminal.
