@@ -10,6 +10,8 @@ docker build . -t project1-env
 
 docker run --rm -p 8787:8787 -e PASSWORD=hello -v C:/Users/ajtan/Dropbox/2020\ Fall/BIOS\ 611/project1:/home/rstudio -t project1-env
 
+docker run -p 8787:8787 -v C:/Users/ajtan/Dropbox/2020\ Fall/BIOS\ 611/project1:/home/rstudio -it project1-env sudo -H -u rstudio bash -c "cd ~/; jupyter lab --ip 0.0.0.0 --port 8787"
+
 Run the following commands to kill a docker container.
 
 docker ps
