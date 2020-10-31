@@ -1,7 +1,8 @@
 ```{r include=FALSE}
 library(gbm)
 library(tidyverse)
-library(Caret)
+library(caret)
+library(ggfortify)
 ```
 # Q1
 
@@ -29,29 +30,50 @@ table(gbm_results$correct)
 
 # Q2
 1.  Examine the dataset for any irregularities. Make the case for filtering out a subset of rows (or for not doing so).
-2.  Perform a principal component analysis on the numerical columns of this data. How many components do we need to get 85% of the variation in the data set?
-3.  Do we need to normalize these columns or not?
-4.  Is the "total" column really the total of the values in the other columns?
-5.  Should we have included in in the PCA? What do you expect about the largest principal components and the total column? Remember, a given principal component corresponds to a weighted combination of the original variables.
-6.  Make a plot of the two largest components. Any insights?
 
 ```{r}
 q2 = read.csv("/home/rstudio/hw5/q2.csv")
-head(q2)
 
-table(q2$Alignment)
-ggplot(data=q2, aes(x=Intelligence)) + geom_histogram(bins=10)
-ggplot(data=q2, aes(x=Strength)) + geom_histogram(bins=10)
-ggplot(data=q2, aes(x=Durability)) + geom_histogram(bins=20)
-ggplot(data=q2, aes(x=Power)) + geom_histogram(bins=20)
-ggplot(data=q2, aes(x=Combat)) + geom_histogram(bins=20)
-ggplot(data=q2, aes(x=Total)) + geom_histogram(bins=20)
+ggplot(data=q2, aes(x=Total)) + geom_histogram(bins=30)
+lowtotal=q2%>%filter(Total==5)
+nrow(lowtotal)
+nrow(lowtotal)/nrow(q2)
 
-temp=q2%>%filter(Total==0)
-table(q2$Total)
-head(q2%>%filter(Total==5))
+q2_filtered=q2%>%filter(Total!=5)
+
 ```
+This dataset contained 177 participants with a total of 5. This subset is about a third of the dataset, but many of these subjects have the exact same values for each skill. Therefore, I will exclude them from the dataset to remove the bias they would add.
 
+2.  Perform a principal component analysis on the numerical columns of this data. How many components do we need to get 85% of the variation in the data set?
+
+```{r}
+q2_analysis=q2_filtered%>%select(-Name,-Alignment)
+q2_pca=prcomp(q2_analysis,scale=T)
+summary(q2_pca)
+```
+To capture 85% of the variance, we need  4 components.
+
+3.  Do we need to normalize these columns or not?
+
+Due to the variation in scale of each of the predictors, we do need to normalize the columns.
+
+4.  Is the "total" column really the total of the values in the other columns?
+
+```{r}
+q2_compare = q2 %>% mutate(true_total=Intelligence+Strength+Speed+Durability+Power+Combat)
+all(q2_compare$true_total==q2$Total)
+```
+We found that the total column is truly the total of the values in the other columns.
+
+5.  Should we have included in in the PCA? What do you expect about the largest principal components and the total column? Remember, a given principal component corresponds to a weighted combination of the original variables.
+
+We should not have included the total column because it is already a weighted combinations of the other variables and is simply adding unnecessary information.
+
+6.  Make a plot of the two largest components. Any insights?
+
+```{r}
+autoplot(q2_pca, x = 1, y = 2)
+```
 # Q3
 
 Use Python/sklearn to perform a TSNE dimensionality reduction.
