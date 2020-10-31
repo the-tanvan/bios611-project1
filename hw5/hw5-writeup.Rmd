@@ -82,6 +82,10 @@ Hints: you want to use the "train" method with the "gbm" method. Use "repeatedcv
 
 A conceptual question: why do we need to characterize our models using strategies like k-fold cross validation? Why can't we just report a single number for the accuracy of our model?
 
+To determine the accuracy of a model, we need to use our data to train and test it. If we do a simple split of train and testing data, we may split our data in a way that is biased and leads to a poor model. By using a strategy like k-fold cross validation, we train our model on multiple randomly selected samples from our data, reducing biased and allowing us to have a better estimate of the accuracy of our model.
+
 # Q7
 
 Describe in words the process of recursive feature elimination. 
+
+Recursive feature elimination is a way to select the best predictors for a model. It begins by creating a model with all of the predictors available and then removing the least important predictors. This process is repeated over and over again until the process reaches a stopping point indicated by the analyst.
