@@ -103,8 +103,25 @@ Using the Caret library, train a GBM model which attempts to predict character a
 Hints: you want to use the "train" method with the "gbm" method. Use "repeatedcv" for the characterization method. If this is confusing, don't forget to read the Caret docs.
 
 ```{r}
+set.seed(203)
+q5_raw = read.csv("/home/rstudio/hw5/q2.csv")
+q5 = q5_raw %>% filter(Total > 5)
+inTraining = createDataPartition(q5$Alignment, p = .75, list = FALSE)
+training = q5[ inTraining,]
+testing = q5[-inTraining,]
+fitControl <- trainControl(method = "repeatedcv",
+                           number = 10,
+                           repeats = 10)
 
+set.seed(555)
+gbmFit1 <- train(Alignment ~ Intelligence+Strength+Speed+Durability+Power+Combat,                         data = training, 
+                 method = "gbm", 
+                 trControl = fitControl,
+                 verbose = FALSE)
+summary(gbmFit1)
 ```
+
+The model determined that strength, intelligence, combat, power, durability, and speed were all important predictors (listed from most to least important).
 
 # Q6
 
