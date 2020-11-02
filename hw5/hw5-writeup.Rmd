@@ -83,8 +83,14 @@ See hw5.ipynb for the TSNE dimensionality reduction.
 In R, plot the results. Color each point by the alignment of the associated character. Any insights?
 
 ```{r}
-
+q3=read.csv("/home/rstudio/hw5/TSNE.csv",header=F)
+V3=q2$Alignment
+q3_graph=cbind(q3,V3)
+head(q3_graph)
+ggplot(data=q3_graph,aes(x=V1,y=V2))+geom_point(aes(color=V3))
 ```
+
+It seems that neutral characters can be found in the upper band but not in the lower cluster. Overall, it seems the alignments are pretty mixed between the two clusters.
 
 # Q4
 
