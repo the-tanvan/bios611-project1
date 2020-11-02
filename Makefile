@@ -1,3 +1,5 @@
+.PHONY: rshiny/app.R
+
 project1-writeup.pdf: project1-writeup.Rmd derived_data/listings.csv derived_data/analysis.csv derived_data/houses.csv derived_data/train.csv derived_data/test.csv
 	R -e "rmarkdown::render('project1-writeup.Rmd',output_format='pdf_document')"
 
@@ -21,3 +23,6 @@ assets/reviews_dist.png: derived_data/listings.csv plot_proposal_price.R
 
 assets/prices_plot.png: derived_data/listings.csv plot_proposal_price.R
 	Rscript plot_proposal_price.R
+
+rshiny/app.R: derived_data/listings.csv
+		Rscript app.R ${PORT}
