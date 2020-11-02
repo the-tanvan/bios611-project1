@@ -10,3 +10,4 @@ project1-writeup.nb.html
 .ipython
 .jupyter
 hw5/.ipynb_checkpoints
+.cache
