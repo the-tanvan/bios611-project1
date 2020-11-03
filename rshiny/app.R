@@ -10,6 +10,11 @@
 library(shiny)
 library(tidyverse)
 
+# Proces Command Line Arguments
+
+args <- commandArgs(trailingOnly = TRUE);
+port <- as.numeric(args[1])
+
 # Data Preparation
 
 listings = read.csv("/home/rstudio/derived_data/listings.csv")
@@ -107,5 +112,5 @@ server <- function(input, output) {
 }
 
 # Run the application 
-shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, server = server, options=list(port=port, host="0.0.0.0"))
 
