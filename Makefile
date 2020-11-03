@@ -40,4 +40,4 @@ assets/reviews_dist.png: derived_data/listings.csv plot_proposal_price.R
 	Rscript plot_proposal_price.R
 
 rshiny/app.R: derived_data/listings.csv
-		Rscript app.R ${PORT}
+		Rscript rshiny/app.R ${PORT}
