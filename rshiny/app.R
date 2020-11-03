@@ -10,7 +10,7 @@
 library(shiny)
 library(tidyverse)
 
-# Proces Command Line Arguments
+# Process Command Line Arguments
 
 args <- commandArgs(trailingOnly = TRUE);
 port <- as.numeric(args[1])
