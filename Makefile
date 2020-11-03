@@ -21,6 +21,18 @@ derived_data/train.csv: derived_data/analysis.csv ds_train_test.R
 derived_data/test.csv: derived_data/analysis.csv ds_train_test.R
 	Rscript ds_train_test.R
 
+assets/pie_hottub.png: derived_data/amenities.csv plot_pie_hottub.py
+	python plot_pie_hottub.py
+
+assets/pie_ideal.png: derived_data/amenities.csv plot_pie_ideal.py
+	python plot_pie_ideal.py
+
+assets/pie_stove.png: derived_data/amenities.csv plot_stove_ideal.py
+	python plot_stove_ideal.py
+
+assets/pie_wifi.png: derived_data/amenities.csv plot_wifi_ideal.py
+	python plot_wifi_ideal.py
+
 assets/prices_plot.png: derived_data/listings.csv plot_proposal_price.R
 	Rscript plot_proposal_price.R
 
