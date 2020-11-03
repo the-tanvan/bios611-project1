@@ -17,7 +17,7 @@ Command to build docker image:
 
 Command to run docker image (RStudio):
 
-``docker run --rm -p 8787:8787 -e PASSWORD=<insert your own unique password> -v <insert path to project1 folder>:/home/rstudio -t project1-env``
+``docker run --rm -p 8787:8787 -p 8788:8788 -e PASSWORD=<insert your own unique password> -v <insert path to project1 folder>:/home/rstudio -t project1-env``
 
 Command to run docker image (Python/Jupyter Lab):
 
@@ -25,9 +25,19 @@ Command to run docker image (Python/Jupyter Lab):
 
 Example:
 
-``docker run --rm -p 8787:8787 -e PASSWORD=hello -v C:/Users/ajtan/Dropbox/2020\ Fall/BIOS\ 611/project1:/home/rstudio -t project1-env``
+``docker run --rm -p 8787:8787 -p 8788:8788 -e PASSWORD=hello -v C:/Users/ajtan/Dropbox/2020\ Fall/BIOS\ 611/project1:/home/rstudio -t project1-env``
 
 ``docker run -p 8787:8787 -v C:/Users/ajtan/Dropbox/2020\ Fall/BIOS\ 611/project1:/home/rstudio -it project1-env sudo -H -u rstudio bash -c "cd ~/; jupyter lab --ip 0.0.0.0 --port 8787"``
+
+Terminal Command for running RShiny Target:
+
+Run the following command in your terminal to run the rshiny app.
+
+``PORT=<insert your desired port here> make shiny_app``
+
+Example:
+
+``PORT=8788 make shiny_app``
 
 ## How do I construct the final result?
 To create the project1-writeup pdf, run the following commands in your R terminal.
