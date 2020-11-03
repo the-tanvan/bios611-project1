@@ -3,10 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 df = pd.read_csv("derived_data/listings.csv")
-row_total = df.shape[0]
 
 df.loc[df['amenities'].str.contains('Wifi'),'wifi'] = 'True'
-wifi_count=df.wifi.value_counts()
 
 df.loc[df['amenities'].str.contains('Stove'),'stove'] = 'True'
 stove_count=df.stove.value_counts()
@@ -19,4 +17,4 @@ ideal_count=df.ideal.value_counts()
 
 df = df[["wifi","stove","hottub","ideal"]]
 analysis = pd.get_dummies(df)
-np.savetxt("derived_data/amenities.csv", analysis, delimiter=",")
+np.savetxt("derived_data/amenities.csv", analysis, delimiter=",", header="wifi,stove,hottub,ideal",comments='')
