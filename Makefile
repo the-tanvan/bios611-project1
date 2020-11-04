@@ -1,5 +1,5 @@
 
-project1-writeup.pdf: project1-writeup.Rmd derived_data/listings.csv derived_data/analysis.csv derived_data/houses.csv derived_data/train.csv derived_data/test.csv
+project1-writeup.pdf: project1-writeup.Rmd derived_data/listings.csv derived_data/analysis.csv derived_data/houses.csv derived_data/train.csv derived_data/test.csv derived_data/amenities.csv assets/pie_ideal.png
 	R -e "rmarkdown::render('project1-writeup.Rmd',output_format='pdf_document')"
 
 derived_data/amenities.csv: derived_data/listings.csv ds_amenities.py
